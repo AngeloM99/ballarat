@@ -5,9 +5,12 @@ from cvzone.FaceDetectionModule import FaceDetector
 from GraphicUtil import DynamicRadius as dr
 import random
 from Effects import pixelation
+from Effects import FontSizeControl
 
 Multiplier = 1
 pix_dimension = (int(32), int(18))
+
+lenna = cv2.imread("len_top.jpg")
 
 Style_dics = {"Font": cv2.FONT_HERSHEY_PLAIN,
               "Font_Thickness": 1,
@@ -29,8 +32,15 @@ while True:
     h, w, _ = img.shape
     image_dim = (int(w * 2), int(h * 2))
 
-    img, bboxs = detector.findFaces(img, draw = False)
+    # Font size control.
+    Style_dics["Font_Scale"] = FontSizeControl(Multiplier)
+
+    # Find face using module
+    img, bboxs = detector.findFaces(img, draw=False)
+
     if bboxs:
+        # Reset counter for Lena Display
+        counter = 0
         FaceCount = len(bboxs)
         # print(bboxs[0])
         # bboxInfo - "id","bbox","score","center"
@@ -38,9 +48,11 @@ while True:
         boxdim = bboxs[0]["bbox"][3]
         center = bboxs[0]["center"]
 
-        if Multiplier <= 10:
-            Multiplier += 0.01
+        if Multiplier <= 4:
+            Multiplier += 0.1
     else:
+        counter += 1
+        print(counter)
         if Multiplier >= 1:
             Multiplier -= 0.1
         # cv2.circle(img, center, dr(boxdim), (255, 255, 255), cv2.FILLED)
