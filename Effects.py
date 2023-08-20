@@ -6,7 +6,7 @@ import random
 
 
 def pixelation(frame, dimensions, pixel_dimension, style, multiplier):
-    frame = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
+    frame = cv2.cvtColor(frame, cv2.COLOR_RGBA2GRAY)
     pixel_width, pixel_height = pixel_dimension
     multipliedWidth = int(pixel_width * multiplier)
     multipliedHeight = int(pixel_height * multiplier)
@@ -72,6 +72,8 @@ def ImageOverlay(image, frame, alpha, dimension):
     overlay = cv2.resize(image,
                          dimension,
                          cv2.COLOR_RGBA2GRAY)
-    overlay = cv2.add((overlay * alpha), (frame * (1 - alpha)))
+    # overlay = cv2.add((overlay * alpha), (frame * (1 - alpha)))
+    overlay = cv2.addWeighted(overlay, alpha, frame, (1-alpha), 0)
+    overlay = overlay.astype(np.uint8)
 
     return overlay
